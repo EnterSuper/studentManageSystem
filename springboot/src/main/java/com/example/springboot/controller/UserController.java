@@ -58,7 +58,6 @@ public class UserController {
                 return Result.error("更改数据失败");
             } else {
                 return Result.error("系统错误");
-
             }
         }
         return Result.success();

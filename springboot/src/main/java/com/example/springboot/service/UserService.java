@@ -12,7 +12,6 @@ import com.example.springboot.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.List;
 
 @Service  // 通过该注解，可以将该类交给Spring容器管理。作用是：将该类交给Spring容器管理，这样在其他类中就可以直接注入该类的对象。
