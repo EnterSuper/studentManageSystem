@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin  // 允许跨域请求
 @RestController
 @RequestMapping(value = "/user")  // 表示这个类是专门用来处理/user路径的请求（给user用的）
 public class UserController {

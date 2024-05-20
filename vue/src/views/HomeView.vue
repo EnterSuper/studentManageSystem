@@ -74,24 +74,39 @@
         <div style="box-shadow: 0 0 10px rgba(0,0,0,.1);padding: 10px 20px;border-radius:5px;margin-bottom:10px">
           下午好，nana！
         </div>
-          <el-card style="width:500px">
-            <div slot="header" class="clearfix">
-              <span>好好学习，天天向上</span>
-            </div>
-            <div>
-              学习是一种信仰
-              <div style="margin-top:20px">
-                <div style="margin:10px 0"><strong>主题色</strong></div>
-                <el-button type="primary">按钮</el-button>
-                <el-button type="success">按钮</el-button>
-                <el-button type="warning">按钮</el-button>
-                <el-button type="danger">按钮</el-button>
-                <el-button type="info">按钮</el-button>
+          <div style="display: flex">
+            <el-card style="width: 50%; margin-right: 10px">
+              <div slot="header" class="clearfix">
+                <span>好好学习，天天向上</span>
               </div>
-            </div>
-          </el-card>
-        </el-main>
+              <div>
+                学习是一种信仰
+                <div style="margin-top:20px">
+                  <div style="margin:10px 0"><strong>主题色</strong></div>
+                  <el-button type="primary">按钮</el-button>
+                  <el-button type="success">按钮</el-button>
+                  <el-button type="warning">按钮</el-button>
+                  <el-button type="danger">按钮</el-button>
+                  <el-button type="info">按钮</el-button>
+                </div>
+              </div>
+            </el-card>
 
+            <el-card style="width: 50%">
+              <div slot="header" class="clearfix">
+                <span>渲染用户数据</span>
+              </div>
+              <div>
+                <el-table :data="users">
+                  <el-table-column label="ID" prop="id"></el-table-column>  <!--prop属性是什么呢：指定数据源的字段,意思就是将数据源(数据库)的id字段(属性)渲染到表格中-->
+                  <el-table-column label="用户名" prop="username"></el-table-column>
+                  <el-table-column label="姓名" prop="name"></el-table-column>
+                  <el-table-column label="地址" prop="address"></el-table-column>
+                </el-table>
+              </div>
+            </el-card>
+          </div>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -99,14 +114,28 @@
 
 <script>
 
+import axios from "axios";
+import request from "@/utils/request";  // 引入封装的axios请求,这里的request是什么呢：封装的axios请求
+
 export default {
   name: 'HomeView',
   data(){
     return{
       isCollapse: false,
       asideWidth: '200px',
-      collapseIcon:'el-icon-s-fold'
+      collapseIcon:'el-icon-s-fold',
+      users: []
     }
+  },
+  mounted() {  // 页面加载完毕后执行
+    // axios.get('http://localhost:9090/user/selectAll').then(res=>{  // axios.get()方法是什么呢：发送get请求
+    //   console.log(res.data);
+    //   this.users = res.data.data
+    // })
+    request.get('/user/selectAll').then(res=>{  // request.get()方法是什么呢：封装的axios请求
+      console.log(res);
+      this.users = res.data
+    })
   },
   methods:{
     handleCollapse() {
