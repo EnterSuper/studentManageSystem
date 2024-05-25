@@ -42,5 +42,6 @@ public interface UserMapper {
     List<User> selectByPage(@Param("skipNum") Integer skipNum, @Param("pageSize") Integer pageSize,
                             @Param("username") String username, @Param("name") String name);
 
-
+    @Select("select * from `user` where username = #{username}")
+    User selectByUsername(@Param("username") String username);
 }

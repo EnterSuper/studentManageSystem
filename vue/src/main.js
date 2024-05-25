@@ -6,8 +6,13 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import '@/assets/css/global.css'
 import '@/assets/css/iconfont/iconfont.css'
+// import '@/assets/css/theme/index.css'  // 找不到
+import request from '@/utils/request'
+
 Vue.config.productionTip = false
-Vue.use(ElementUI,{size:'small'});
+Vue.use(ElementUI,{size:'small' });
+
+Vue.prototype.$request = request;
 
 new Vue({
   router,

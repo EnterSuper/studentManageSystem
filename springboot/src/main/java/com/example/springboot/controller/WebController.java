@@ -6,34 +6,51 @@
 
 package com.example.springboot.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.example.springboot.common.Result;
+import com.example.springboot.entity.User;
+import com.example.springboot.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-
+@CrossOrigin
 @RestController  // 通过该注解，将该类定义为一个控制器
-@RequestMapping(value = "/web")  // 通过该注解，定义类的请求路径
 public class WebController {
-
-
-    @RequestMapping (value = "/hello", method = RequestMethod.GET) // 提供接口，路径为"/hello"，"/"路径的HTTP请求将会被映射到hello方法进行处理，就是接口的路径，默认是GET请求和“/”路径
+    @Autowired
+    UserService userService;
+    @GetMapping (value = "/") // 提供接口，路径为"/hello"，"/"路径的HTTP请求将会被映射到hello方法进行处理，就是接口的路径，默认是GET请求和“/”路径
     public Result hello(String name) {  // 接口的方法的实现。
-        return Result.success(name);
+        return Result.success("success");
     }
 
-    // post新增数据，put更新数据，delete删除数据
-
-    @PostMapping(value = "/post") // 提供接口，路径为"/hello"，"/"路径的HTTP请求将会被映射到hello方法进行处理，就是接口的路径，默认是GET请求和“/”路径
-    public Result post(@RequestBody Obj obj) {  // post接口   一般用来提交数据，所以这里接收一个对象。web/post
-        return Result.success(obj);  // Obj必须要有getter和setter方法
-    }  // 如果不加@RequestBody注解，那么接口的参数就是url参数，就是?name=xxx，如果加了@RequestBody注解，那么接口的参数就是json格式的数据，就是{"name":"xxx"}
-
-    @PutMapping(value = "/put")
-    public Result put(@RequestBody Obj obj) {  // put接口一般用来更新数据，所以这里接收一个对象。web/put
-        return Result.success(obj);
+    // 登录
+    @PostMapping(value = "/login")
+    public Result login(@RequestBody User user) {  // 通过@RequestBody注解，接收json格式的数据。
+        if (StrUtil.isBlank(user.getUsername())) {
+            return Result.error("用户名不能为空");
+        }
+        if (StrUtil.isBlank(user.getPassword())) {
+            return Result.error("密码不能为空");
+        }
+        user = userService.login(user);
+        return Result.success(user);
     }
-    // put也可以删除数据。
-    @DeleteMapping(value = "/delete/{id}")  // 请求路径中的id参数，通过@PathVariable注解绑定到方法的参数中。路径参数，就是url中的参数，比如：/delete/1
-    public Result delete(@PathVariable Integer id) {  // 当然也可以用@RequestBody注解，接收json格式的数据，比如批量删除时，接收一个数组。
-        return Result.success(id);
+
+    @PostMapping(value = "/register")
+    public Result register(@RequestBody User user) {
+        if (StrUtil.isBlank(user.getUsername())) {
+            return Result.error("用户名不能为空");
+        }
+        if (StrUtil.isBlank(user.getPassword())) {
+            return Result.error("密码不能为空");
+        }
+        if (user.getUsername().length() > 10 || user.getUsername().length() < 2) {
+            return Result.error("用户名长度必须在2-10之间");
+        }
+        if (user.getPassword().length() < 4) {
+            return Result.error("密码长度必须大于4");
+        }
+        user = userService.register(user);
+        return Result.success(user);
     }
 }
