@@ -17,6 +17,6 @@ public class GlobalException {
     @ExceptionHandler(ServiceException.class)  // 通过该注解，可以将一个方法定义为异常处理方法。就是当Controller中抛出异常时，会被这个方法捕获。
     @ResponseBody  // 通过该注解，将方法的返回值定义为json格式。
     public Result serviceException(ServiceException e) {
-        return Result.error("500", e.getMessage());
+        return Result.error(e.getCode(), e.getMessage());
     }
 }

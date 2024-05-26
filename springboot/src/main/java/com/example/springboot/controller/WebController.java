@@ -7,6 +7,7 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 public class WebController {
     @Autowired
     UserService userService;
-    @GetMapping (value = "/") // 提供接口，路径为"/hello"，"/"路径的HTTP请求将会被映射到hello方法进行处理，就是接口的路径，默认是GET请求和“/”路径
+    @AuthAccess
+    @GetMapping (value = "/")   // "/"的意思是根目录，即http://localhost:9090/
     public Result hello(String name) {  // 接口的方法的实现。
         return Result.success("success");
     }
@@ -36,6 +38,7 @@ public class WebController {
         return Result.success(user);
     }
 
+    @AuthAccess
     @PostMapping(value = "/register")
     public Result register(@RequestBody User user) {
         if (StrUtil.isBlank(user.getUsername())) {

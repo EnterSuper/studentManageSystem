@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="form-container">
-      <div class="form-title">欢迎登陆后台管理系统</div>
+      <div class="form-title">欢迎登陆教务系统</div>
       <el-form :model="user" :rules="rules" ref="loginRef" class="form">
         <el-form-item prop="username" class="form-item">
           <el-input prefix-icon="el-icon-user" size="medium" v-model="user.username" placeholder="请输入账号"></el-input>
@@ -57,6 +57,9 @@ export default {
     }
   },
   methods: {
+    getCode(code) {
+      this.code = code.toLowerCase()
+    },
     login() {
       this.$refs['loginRef'].validate((valid) => {
         if (valid) {
@@ -64,6 +67,7 @@ export default {
             if (res.code === '200') {
               this.$router.push('/')
               this.$message.success('登陆成功')
+              localStorage.setItem("honey-user", JSON.stringify(res.data))  // 将用户信息存储到本地
             } else {
               this.$message.error(res.msg)
             }

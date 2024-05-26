@@ -3,8 +3,8 @@
     <el-container>
       <el-aside :width="asideWidth" style="min-height: 100vh;background-color: #001529">
         <div style="height:60px; line-height:60px;color:white; display:flex; align-items: center; justify-content:center;">
-          <img src="@/assets/logo1.jpg" alt="" style="width: 40px;height: 40px">
-          <span class="logo-titles" tyle="margin-left: 5px;font-size:20px" v-show="!isCollapse">nana</span>
+          <img src="@/assets/logo.png" alt="" style="width: 40px;height: 40px">
+          <span class="logo-titles" style="margin-left: 5px;font-size:20px" v-show="!isCollapse">nana</span>
         </div>
 
 
@@ -32,7 +32,7 @@
               <span>选课信息</span>
             </template>
           </el-menu-item>
-          <el-submenu>
+          <el-submenu index="">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
@@ -46,7 +46,7 @@
       <el-container>
 
         <el-header>
-          <i :class="collapseIcon" style="font-size:26px" @click="handleCollapse"></i>
+          <i class="collapseIcon" style="font-size:26px" @click="handleCollapse"></i>
           <el-breadcrumb separator-class="el-icon-arrow-right" style="margin:20px">
             <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item :to="{ path: '/User' }">用户管理</el-breadcrumb-item>
@@ -57,13 +57,13 @@
             <i class="el-icon-full-screen" style="font-size:20px" @click="handleFull"></i>
             <el-dropdown placement="bottom">
             <div style="display:flex; align-items:center; cursor:default">
-              <img src="@/assets/logo1.jpg" alt="" style="width:40px; height: 40px" >
+              <img src="@/assets/logo.png" alt="" style="width:40px; height: 40px" >
               <span>管理员</span>
             </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
                 <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item @click.native="$router.push('/login')">退出登录</el-dropdown-item>
+                <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -138,6 +138,21 @@ export default {
     })
   },
   methods:{
+    logout(){
+      this.$confirm('确定退出登录吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.removeItem('honey-user')  // 移除本地存储的用户信息
+        this.$router.push('/login')
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消退出'
+        });
+      });
+    },
     handleCollapse() {
       this.isCollapse =!this.isCollapse
       this.asideWidth =this.isCollapse? '64px':'200px'

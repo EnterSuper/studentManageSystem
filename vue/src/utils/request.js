@@ -1,4 +1,5 @@
 import axios from 'axios'
+import router from "@/router";
 
 // 创建可一个新的axios对象
 const request = axios.create({
@@ -11,8 +12,8 @@ const request = axios.create({
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
-    // let user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
-    // config.headers['token'] = 'token'  // 设置请求头
+    let user = JSON.parse(localStorage.getItem("honey-user") || '{}')
+    config.headers['token'] = user.token  // 设置请求头
 
     return config
 }, error => {
@@ -29,6 +30,9 @@ request.interceptors.response.use(
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
+        }
+        if (res.code === '401') {
+            router.push({path: '/login'})
         }
         return res;
     },
