@@ -12,6 +12,14 @@
         <el-form-item prop="confirmPass" class="form-item">
           <el-input placeholder="请确认密码" prefix-icon="el-icon-lock" size="medium" v-model="user.confirmPass"></el-input>
         </el-form-item>
+
+        <el-form-item prop="role" class="form-item">
+          <el-radio-group v-model="user.role">
+            <el-radio label="学生" style="color: black;"></el-radio>
+            <el-radio label="管理员" style="color: black;"></el-radio>
+          </el-radio-group>
+        </el-form-item>
+
         <el-form-item class="form-item">
           <el-button type="primary" @click="register" class="register-button">注 册</el-button>
         </el-form-item>
@@ -43,7 +51,8 @@ export default {
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
-        confirmPass: [{ validator: validatePassword, trigger: 'blur' }]
+        confirmPass: [{ validator: validatePassword, trigger: 'blur' }],
+        role: [{ required: true, message: '请选择角色', trigger: 'blur' }]
       }
     }
   },

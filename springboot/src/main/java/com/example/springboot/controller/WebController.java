@@ -47,6 +47,9 @@ public class WebController {
         if (StrUtil.isBlank(user.getPassword())) {
             return Result.error("密码不能为空");
         }
+        if (StrUtil.isBlank(user.getRole())) {
+            return Result.error("请选择角色");
+        }
         if (user.getUsername().length() > 10 || user.getUsername().length() < 2) {
             return Result.error("用户名长度必须在2-10之间");
         }

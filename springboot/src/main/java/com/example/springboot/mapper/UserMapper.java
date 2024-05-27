@@ -8,8 +8,8 @@ import java.util.List;
 @Mapper  // 通过该注解，可以将该接口交给Spring容器管理。比如在其他类中直接注入该接口的对象。
 public interface UserMapper {
 
-    @Insert("insert into `user` (username, password, name, phone, email, address, avatar)" +
-            "values (#{username}, #{password}, #{name}, #{phone}, #{email}, #{address}, #{avatar})")
+    @Insert("insert into `user` (username, password, name, phone, email, address, avatar,role)" +
+            "values (#{username}, #{password}, #{name}, #{phone}, #{email}, #{address}, #{avatar},#{role})")
         // 通过该注解，可以将该方法映射到对应的sql语句。就是在调用这个方法的时候，会执行对应的sql语句。
     void insertUser(User user);
 
@@ -20,7 +20,7 @@ public interface UserMapper {
     @Delete("delete from `user` where id = #{id}")
     void delete(Integer id);
 
-    @Select("select * from `user` order by id desc")
+    @Select("select * from `user` order by id asc")
     List<User> selectAll();
 
     @Select("select * from `user` where id = #{id} order by id desc")

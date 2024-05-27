@@ -3,42 +3,39 @@
     <el-container>
       <el-aside :width="asideWidth" style="min-height: 100vh;background-color: #001529">
         <div style="height:60px; line-height:60px;color:white; display:flex; align-items: center; justify-content:center;">
-          <img src="@/assets/logo.png" alt="" style="width: 40px;height: 40px">
-          <span class="logo-titles" style="margin-left: 5px;font-size:20px" v-show="!isCollapse">nana</span>
+          <i class="el-icon-user-solid" style="font-size:25px"></i>
+          <span class="logo-titles" style="margin-left: 5px;font-size:20px" v-show="!isCollapse">{{user.username}}</span>
         </div>
 
 
         <el-menu :collapse="isCollapse" :collapse-transition="false" router background-color="#001529" text-color="rgba(255,255,255,0.65)"  active-text-color="#fff" style="border: none" :default-active="$route.path">
-          <el-menu-item index="/">
+          <el-menu-item index="/home">
+            <template slot="title">
               <i class="el-icon-house"></i>
-              <span slot="title">系统首页</span>
+              <span>系统首页</span>
+            </template>
           </el-menu-item>
 <!--          只有一级标签 index才会生效-->
-          <el-menu-item index="/1">
+          <el-menu-item index="/class">
             <template slot="title">
               <i class="el-icon-house"></i>
               <span>个人课表</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/2">
+          <el-menu-item index="/grade">
             <template slot="title">
               <i class="el-icon-house"></i>
               <span>成绩管理</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/3">
-            <template slot="title">
-              <i class="el-icon-house"></i>
-              <span>选课信息</span>
-            </template>
-          </el-menu-item>
-          <el-submenu index="">
+<!--          链接新创建的页面-->
+          <el-submenu index="info" v-if="user.role==='管理员'">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>信息管理</span>
             </template>
-            <el-menu-item>用户信息</el-menu-item>
-            <el-menu-item>管理员信息</el-menu-item>
+            <el-menu-item index="/user">用户信息</el-menu-item>
+
           </el-submenu>
         </el-menu>
 
@@ -53,12 +50,11 @@
           </el-breadcrumb>
 
           <div style="flex: 1; width: 0; display:flex; align-items:center; justify-content: flex-end">
-<!--            <i class="el-icon-full-screen" style="font-size: 26px"></i>-->
-            <i class="el-icon-full-screen" style="font-size:20px" @click="handleFull"></i>
+            <i class="el-icon-full-screen" style="font-size:15px" @click="handleFull"></i>
             <el-dropdown placement="bottom">
             <div style="display:flex; align-items:center; cursor:default">
-              <img src="@/assets/logo.png" alt="" style="width:40px; height: 40px" >
-              <span>管理员</span>
+              <i class="el-icon-user-solid" style="font-size: 24px;"></i>
+<!--              <span>管理员</span>-->
             </div>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>个人信息</el-dropdown-item>
@@ -69,43 +65,9 @@
           </div>
 
         </el-header>
-
+        <!--        主体区域-->
         <el-main>
-        <div style="box-shadow: 0 0 10px rgba(0,0,0,.1);padding: 10px 20px;border-radius:5px;margin-bottom:10px">
-          下午好，nana！
-        </div>
-          <div style="display: flex">
-            <el-card style="width: 50%; margin-right: 10px">
-              <div slot="header" class="clearfix">
-                <span>好好学习，天天向上</span>
-              </div>
-              <div>
-                学习是一种信仰
-                <div style="margin-top:20px">
-                  <div style="margin:10px 0"><strong>主题色</strong></div>
-                  <el-button type="primary">按钮</el-button>
-                  <el-button type="success">按钮</el-button>
-                  <el-button type="warning">按钮</el-button>
-                  <el-button type="danger">按钮</el-button>
-                  <el-button type="info">按钮</el-button>
-                </div>
-              </div>
-            </el-card>
-
-            <el-card style="width: 50%">
-              <div slot="header" class="clearfix">
-                <span>渲染用户数据</span>
-              </div>
-              <div>
-                <el-table :data="users">
-                  <el-table-column label="ID" prop="id"></el-table-column>  <!--prop属性是什么呢：指定数据源的字段,意思就是将数据源(数据库)的id字段(属性)渲染到表格中-->
-                  <el-table-column label="用户名" prop="username"></el-table-column>
-                  <el-table-column label="姓名" prop="name"></el-table-column>
-                  <el-table-column label="地址" prop="address"></el-table-column>
-                </el-table>
-              </div>
-            </el-card>
-          </div>
+          <router-view />
         </el-main>
       </el-container>
     </el-container>
@@ -124,7 +86,8 @@ export default {
       isCollapse: false,
       asideWidth: '200px',
       collapseIcon:'el-icon-s-fold',
-      users: []
+      users: [],
+      user:JSON.parse(localStorage.getItem('honey-user')||{})
     }
   },
   mounted() {  // 页面加载完毕后执行
