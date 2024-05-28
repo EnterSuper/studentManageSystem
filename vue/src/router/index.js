@@ -14,7 +14,9 @@ const routes = [
       { path: 'user', name: 'User', component: () => import('@/views/manager/User')},
       { path: '403', name: 'Auth', component: () => import('@/views/manager/Auth')},
       { path: 'class', name: 'class', component: () => import('@/views/manager/class')},
-      { path: 'grade', name: 'grade', component: () => import('@/views/manager/grade')}
+      { path: 'grade', name: 'grade', component: () => import('@/views/manager/grade')},
+      { path: 'person', name: 'Person', component: () => import('@/views/manager/Person')},
+      { path: 'password', name: 'Password', component: () => import('@/views/manager/Password')}
     ]
   },
   {

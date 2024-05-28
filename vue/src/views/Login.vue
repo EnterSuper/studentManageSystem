@@ -20,9 +20,28 @@
         <el-form-item class="form-item">
           <el-button type="primary" @click="login" class="login-button">登 陆</el-button>
         </el-form-item>
-        <div class="register-link">还没有账号？<span @click="$router.push('/register')">注册</span></div>
+        <div class="register-link">还没有账号？
+          <span @click="$router.push('/register')">注册</span>
+          <span @click="handleForgetPass" style="margin-left: 10px">忘记密码</span>
+        </div>
       </el-form>
     </div>
+
+    <el-dialog title="忘记密码" :visible.sync="forgetPassDialogVis" width="30%">
+      <el-form :model="forgetUserForm" label-width="80px" style="padding-right: 20px">
+        <el-form-item label="用户名">
+          <el-input v-model="forgetUserForm.username" autocomplete="off" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="forgetUserForm.phone" autocomplete="off" placeholder="请输入手机号"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="forgetPassDialogVis = false">取 消</el-button>
+        <el-button type="primary" @click="resetPassword">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -53,7 +72,9 @@ export default {
       rules: {
         username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
-      }
+      },
+      forgetUserForm: {},   // 忘记密码的表单数据
+      forgetPassDialogVis: false
     }
   },
   methods: {
@@ -74,7 +95,21 @@ export default {
           })
         }
       })
-    }
+    },
+    handleForgetPass() {   //  初始化表单的数据
+      this.forgetUserForm = {}
+      this.forgetPassDialogVis = true
+    },
+    resetPassword() {
+      this.$request.put('/password', this.forgetUserForm).then(res => {
+        if (res.code === '200') {
+          this.$message.success('重置成功')
+          this.forgetPassDialogVis = false
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
   }
 }
 </script>

@@ -50,15 +50,15 @@
           </el-breadcrumb>
 
           <div style="flex: 1; width: 0; display:flex; align-items:center; justify-content: flex-end">
-            <i class="el-icon-full-screen" style="font-size:15px" @click="handleFull"></i>
+            <i class="el-icon-full-screen" style="font-size:15px;margin-right: 10px" @click="handleFull"></i>
             <el-dropdown placement="bottom">
             <div style="display:flex; align-items:center; cursor:default">
-              <i class="el-icon-user-solid" style="font-size: 24px;"></i>
-<!--              <span>管理员</span>-->
+              <i class="el-icon-user-solid" style="font-size: 24px;margin-right: 8px"></i>
+              <span style="margin-right: 10px">{{user.name}}</span>
             </div>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/person')">个人信息</el-dropdown-item>
+                <el-dropdown-item @click.native="$router.push('/password')">修改密码</el-dropdown-item>
                 <el-dropdown-item @click.native="logout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
