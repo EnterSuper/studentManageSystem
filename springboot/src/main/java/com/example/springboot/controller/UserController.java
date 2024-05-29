@@ -6,40 +6,37 @@
 
 package com.example.springboot.controller;
 
-import com.example.springboot.common.Page;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@CrossOrigin  // 允许跨域请求
+@CrossOrigin
 @RestController
-@RequestMapping(value = "/user")  // 表示这个类是专门用来处理/user路径的请求（给user用的）
+@RequestMapping("/user")
 public class UserController {
 
-
-    @Autowired  // 通过该注解，将UserService的对象注入到UserController中。就可以当成成员变量使用了。而不用通过构造函数new一个对象。
+    @Autowired
     UserService userService;
 
     /**
-     * 添加用户
+     * 新增用户信息
      */
-    @PostMapping(value = "/add")
-    public Result add(@RequestBody User user) {  // 通过@RequestBody注解，接收json格式的数据。
+    @PostMapping("/add")
+    public Result add(@RequestBody User user) {
         try {
-            userService.insertUser(user);
+            userService.save(user);
         } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("插入数据失败");
+            if (e instanceof DuplicateKeyException) {
+                return Result.error("插入数据库错误");
             } else {
                 return Result.error("系统错误");
             }
@@ -50,170 +47,66 @@ public class UserController {
     /**
      * 修改用户信息
      */
-    @PutMapping(value = "/update")
-    public Result update(@RequestBody User user) {  // 通过@RequestBody注解，接收json格式的数据。
-        try {
-            userService.updataUser(user);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("更改数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
+    @PutMapping("/update")
+    public Result update(@RequestBody User user) {
+        userService.updateById(user);
         return Result.success();
     }
 
     /**
      * 删除用户信息
      */
-    @DeleteMapping(value = "/delete/{id}")
-    public Result delete(@PathVariable Integer id) {  // 通过@PathVariable注解，接收路径中的参数。
-        try {
-            userService.deleteUser(id);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("删除数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
+    @DeleteMapping("/delete/{id}")
+    public Result delete(@PathVariable Integer id) {
+        userService.removeById(id);
         return Result.success();
     }
+
 
     /**
      * 批量删除用户信息
      */
-    @DeleteMapping(value = "/delete/batch")
-    public Result batchDelete(@RequestBody List<Integer> ids) {  // json格式的list: [1,2,3]
-        try {
-            userService.batchDeleteUser(ids);
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("删除数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
+    @DeleteMapping("/delete/batch")
+    public Result batchDelete(@RequestBody List<Integer> ids) {  //  [7, 8]
+        userService.removeBatchByIds(ids);
         return Result.success();
     }
 
     /**
-     * 查询用户信息
+     * 查询全部用户信息
      */
-    @GetMapping(value = "/selectAll")
-    public Result selectAll() {  // 通过@RequestBody注解，接收json格式的数据。
-        List<User> users;
-        try {
-            users = userService.selectAll();  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(users);  // 返回查询到的数据
+    @GetMapping("/selectAll")
+    public Result selectAll() {
+        List<User> userList = userService.list(new QueryWrapper<User>().orderByDesc("id"));  // select * from user order by id desc
+        return Result.success(userList);
     }
 
     /**
-     * 通过ID用户信息
+     * 根据ID查询用户信息
      */
-    @GetMapping(value = "/selectById/{id}")
-    public Result selectById(@PathVariable Integer id) {  // 接收url格式的数据。
-        User user;
-        try {
-            user = userService.selectById(id);  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(user);  // 返回查询到的数据
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        User user = userService.getById(id);
+        return Result.success(user);
     }
 
-    /**
-     * 根据 name查询用户信息
-     */
-    @GetMapping(value = "/selectByName/{name}")
-    public Result selectByName(@PathVariable String name) {
-        List<User> users;
-        try {
-            users = userService.selectByName(name);  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(users);  // 返回查询到的数据
-    }
 
     /**
-     * 根据多种条件查询用户信息
+     * 多条件模糊查询用户信息
+     * pageNum 当前的页码
+     * pageSize 每页查询的个数
      */
-    @GetMapping(value = "/selectByMore")  // @RequestParam注解，接收url格式的数据就是带问号 ?的那种：/selectByMore?username=xxx&name=xxx
-    public Result selectByMore(@RequestParam String username, @RequestParam String name) {  // 通过@RequestParam注解，接收url格式的数据。与@PathVariable不同的是，@RequestParam接收的是key-value格式的数据。
-        List<User> users;
-        try {
-            users = userService.selectByMore(username, name);  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(users);  // 返回查询到的数据
+    @GetMapping("/selectByPage")
+    public Result selectByPage(@RequestParam Integer pageNum,
+                               @RequestParam Integer pageSize,
+                               @RequestParam String username,
+                               @RequestParam String name) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<User>().orderByDesc("id");
+        queryWrapper.like(StrUtil.isNotBlank(username), "username", username);
+        queryWrapper.like(StrUtil.isNotBlank(name), "name", name);
+        // select * from user where username like '%#{username}%' and name like '%#{name}%'
+        Page<User> page = userService.page(new Page<>(pageNum, pageSize), queryWrapper);
+        return Result.success(page);
     }
 
-    /**
-     * 根据多种条件模糊查询用户信息
-     */
-    @GetMapping(value = "/selectByMoreLike")
-    public Result selectByMoreLike(@RequestParam String username, @RequestParam String name) {
-        List<User> users;
-        try {
-            users = userService.selectByMoreLike(username, name);  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(users);  // 返回查询到的数据
-    }
-
-    /**
-     * 多条件分页查询
-     */
-    @GetMapping(value = "/selectByPage")
-    public Result selectByPage(@RequestParam String username, @RequestParam String name,
-                               @RequestParam Integer pageNum, @RequestParam Integer pageSize) {  // pageNum和pageSize分别是当前页和每页显示的数据条数。
-        Page<User> page;  // User的分页
-        try {
-            page = userService.selectByPage(pageNum, pageSize, username, name);  // 查询到的消息要暂存起来
-        } catch (Exception e) {
-            if (e instanceof DuplicateKeyException) {  // 如果是SQLException异常，就返回插入数据错误。instanceof是判断一个对象是否是另一个对象的实例。
-                return Result.error("查询数据失败");
-            } else {
-                return Result.error("系统错误");
-            }
-        }
-        return Result.success(page);  // 返回查询到的数据
-    }
-    // 查询教这个学生的instructor
 }
-
-
-
-
-
-
-
-
-
