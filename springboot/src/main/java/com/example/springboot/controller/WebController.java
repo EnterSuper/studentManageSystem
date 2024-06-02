@@ -7,12 +7,17 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.AuthAccess;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.User;
 import com.example.springboot.service.UserService;
+import com.example.springboot.entity.Takes;
+import com.example.springboot.service.TakesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController  // 通过该注解，将该类定义为一个控制器
@@ -70,4 +75,26 @@ public class WebController {
         return Result.success();
     }
 
+    @Autowired
+    TakesService takesService;
+    @GetMapping("/schedule")
+    @ResponseBody
+    public Result schedule(
+            @RequestParam(name = "year") String year,
+            @RequestParam(name = "semester") String semester,
+            @RequestParam(name = "week") String week,
+            @RequestParam(name = "id") Integer id) {
+        List<Takes> schedulelist = takesService.list(new QueryWrapper<Takes>().select("time", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"));
+        return Result.success(schedulelist);
+    }
+
+    @GetMapping("/grade")
+    @ResponseBody
+    public Result grade(
+            @RequestParam(name = "year") String year,
+            @RequestParam(name = "semester") String semester,
+            @RequestParam(name = "id") Integer id) {
+        List<Takes> gradelist = takesService.list(new QueryWrapper<Takes>().select("title", "credits", "grade", "type"));
+        return Result.success(gradelist);
+    }
 }
