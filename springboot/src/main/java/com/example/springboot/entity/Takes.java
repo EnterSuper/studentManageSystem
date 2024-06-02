@@ -30,4 +30,5 @@ public class Takes {
     String Friday;
     String Saturday;
     String Sunday;
+    Integer time_id;
 }

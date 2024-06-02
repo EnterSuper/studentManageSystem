@@ -33,23 +33,32 @@
       <el-option label="第16周" value="16"></el-option>
       <el-option label="第17周" value="17"></el-option>
       <el-option label="第18周" value="18"></el-option>
+      <el-option label="第19周" value="19"></el-option>
+      <el-option label="第20周" value="20"></el-option>
+      <!-- ... -->
     </el-select>
 
     <el-button @click="fetchSchedule">查询</el-button>
 
     <!-- 显示课表信息 -->
-    <el-table :data="schedule" style="width: 100%">
-      <!-- 这里可以根据实际需要添加更多的列 -->
-      <el-table-column prop="time" label="时间" width="180"></el-table-column>
-      <el-table-column prop="monday" label="星期一" width="180"></el-table-column>
-      <el-table-column prop="tuesday" label="星期二" width="180"></el-table-column>
-      <el-table-column prop="wednesday" label="星期三" width="180"></el-table-column>
-      <el-table-column prop="thursday" label="星期四" width="180"></el-table-column>
-      <el-table-column prop="friday" label="星期五" width="180"></el-table-column>
-      <el-table-column prop="saturday" label="星期六" width="180"></el-table-column>
-      <el-table-column prop="sunday" label="星期日" width="180"></el-table-column>
-      <!-- ... -->
-    </el-table>
+    <el-card style="width: 100%">
+      <div slot="header" class="clearfix">
+        <span>课表</span>
+      </div>
+      <div>
+        <el-table :data="schedule" style="width: 100%">
+          <el-table-column label="时间" prop="time"  width="180"></el-table-column>
+          <el-table-column label="星期一" prop="monday"  width="180"></el-table-column>
+          <el-table-column label="星期二" prop="tuesday"  width="180"></el-table-column>
+          <el-table-column label="星期三" prop="wednesday"  width="180"></el-table-column>
+          <el-table-column label="星期四" prop="thursday"  width="180"></el-table-column>
+          <el-table-column label="星期五" prop="friday"  width="180"></el-table-column>
+          <el-table-column label="星期六" prop="saturday"  width="180"></el-table-column>
+          <el-table-column label="星期日" prop="sunday"  width="180"></el-table-column>
+          <!-- ... -->
+        </el-table>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -65,23 +74,24 @@ export default {
   },
   methods: {
     fetchSchedule() {
-      // 这里可以发送一个请求到后端 API 端点，获取课表信息
-      // 例如：
       this.$request.get('/schedule', {
         params: {
           year: this.year,
           semester: this.semester,
-          week: this.week,
-          id: this.id,
+          week: this.week
         }
       }).then(response => {
+        console.log("111111111111111")
+        console.log(response.data);
         this.schedule = response.data;
       });
     }
+  },
+  mounted() {
+    this.fetchSchedule();
   }
 };
 </script>
 
 <style scoped>
-
 </style>

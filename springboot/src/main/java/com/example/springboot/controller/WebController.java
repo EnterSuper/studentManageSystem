@@ -79,12 +79,10 @@ public class WebController {
     TakesService takesService;
     @GetMapping("/schedule")
     @ResponseBody
-    public Result schedule(
-            @RequestParam(name = "year") String year,
-            @RequestParam(name = "semester") String semester,
-            @RequestParam(name = "week") String week,
-            @RequestParam(name = "id") Integer id) {
-        List<Takes> schedulelist = takesService.list(new QueryWrapper<Takes>().select("time", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"));
+    public Result schedule(@RequestParam(name = "year") String year,
+                           @RequestParam(name = "semester") String semester,
+                           @RequestParam(name = "week") String week) {
+        List<Takes> schedulelist = takesService.selectSchedule(year, semester, week);
         return Result.success(schedulelist);
     }
 
